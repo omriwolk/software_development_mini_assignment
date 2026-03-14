@@ -79,36 +79,50 @@ public class TaskRepository implements AutoCloseable {
     }
 
     // Lists all tasks stored in the database
-    public void listTasks() throws SQLException {
+    public void listTasks(Boolean done) throws SQLException {
 
         // SQL query selecting tasks ordered by newest first
-        String sql = "SELECT id, title, is_done, created_at FROM tasks ORDER BY id DESC;";
+        String sql;
 
-        // Prepare statement and execute query
-        try (PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+        if (done == null) {
+            sql = "SELECT id, title, is_done, created_at FROM tasks ORDER BY id ASC;";
+        } else {
+            sql = "SELECT id, title, is_done, created_at FROM tasks WHERE is_done = ? ORDER BY id ASC;";
+        }
 
-            // Loop through each row returned by the query
-            while (resultSet.next()) {
+        // Prepare statement
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
 
-                // Read values from the current row
-                int id = resultSet.getInt("id");
-                String title = resultSet.getString("title");
+            // Set the parameter if filtering
+            if (done != null) {
+                statement.setInt(1, done ? 1 : 0);
+            }
 
-                // Convert integer (0/1) to boolean
-                boolean done = resultSet.getInt("is_done") == 1;
+            // Prepare statement and execute query
+            try (ResultSet resultSet = statement.executeQuery()) {
 
-                // Read creation timestamp
-                String createdAt = resultSet.getString("created_at");
+                // Loop through each row returned by the query
+                while (resultSet.next()) {
 
-                // Print formatted output to the console
-                System.out.printf("[%d] %s | done=%s | created_at=%s%n", id, title, done, createdAt);
+                    // Read values from the current row
+                    int id = resultSet.getInt("id");
+                    String title = resultSet.getString("title");
+
+                    // Convert integer (0/1) to Boolean
+                    Boolean is_done = resultSet.getInt("is_done") == 1;
+
+                    // Read creation timestamp
+                    String createdAt = resultSet.getString("created_at");
+
+                    // Print formatted output to the console
+                    System.out.printf("[%d] %s | done=%s | created_at=%s%n", id, title, is_done, createdAt);
+                }
             }
         }
     }
 
     // Updates a task's completion status
-    public void markDone(int id, boolean done) throws SQLException {
+    public void markDone(int id, Boolean done) throws SQLException {
 
         // SQL update query
         String sql = "UPDATE tasks SET is_done = ? WHERE id = ?;";
@@ -116,7 +130,7 @@ public class TaskRepository implements AutoCloseable {
         // Prepare statement
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            // Convert boolean to SQLite integer (1 or 0)
+            // Convert Boolean to SQLite integer (1 or 0)
             statement.setInt(1, done ? 1 : 0);
 
             // Specify which task to update

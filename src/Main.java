@@ -42,7 +42,7 @@ public class Main {
             System.out.println("Database ready.");
 
 
-            // Boolean flag that controls the CLI loop
+            // boolean flag that controls the CLI loop
             boolean running = true;
 
             //Main Loop
@@ -52,12 +52,14 @@ public class Main {
                 System.out.println();
                 System.out.println("=== TASK LIST ===");
                 System.out.println("1) Add task");
-                System.out.println("2) List tasks");
-                System.out.println("3) Mark done / not done");
-                System.out.println("4) Rename task");
-                System.out.println("5) View task by id");
-                System.out.println("6) Delete task by id");
-                System.out.println("7) Quit");
+                System.out.println("2) List ALL tasks");
+                System.out.println("3) List DONE tasks");
+                System.out.println("4) List NOT DONE tasks");
+                System.out.println("5) Mark done / not done");
+                System.out.println("6) Rename task");
+                System.out.println("7) View task by id");
+                System.out.println("8) Delete task by id");
+                System.out.println("9) Quit");
                 System.out.print("Choose: ");
 
                 // Read user input as a string
@@ -91,21 +93,31 @@ public class Main {
 
                     }
 
-                    //List tasks
+                    //List ALL tasks
                     case 2 -> {
-                        repository.listTasks();
+                        repository.listTasks(null);
+                    }
+
+                    //List DONE tasks
+                    case 3 -> {
+                        repository.listTasks(true);
+                    }
+
+                    //List NOT DONE tasks
+                    case 4 -> {
+                        repository.listTasks(false);
                     }
 
                     //Mark done/ not done
-                    case 3 -> {
+                    case 5 -> {
                         //Read id
                         int id = ReadId(scanner);
 
                         //Done or not done flag
                         System.out.println("Is the task done? true/false");
                         String raw_done = scanner.nextLine();
+                        Boolean done;
 
-                        boolean done;
                         // Validate user input
                         if (raw_done.equalsIgnoreCase("true") || raw_done.equalsIgnoreCase("false")) {
                             done = Boolean.parseBoolean(raw_done);
@@ -131,7 +143,7 @@ public class Main {
                     }
 
                     //Rename task
-                    case 4 -> {
+                    case 6 -> {
                         //Read id
                         int id = ReadId(scanner);
 
@@ -146,7 +158,7 @@ public class Main {
                     }
 
                     //View task by id
-                    case 5 -> {
+                    case 7 -> {
                         //Read id
                         int id = ReadId(scanner);
 
@@ -156,7 +168,7 @@ public class Main {
                     }
 
                     //View task by id
-                    case 6 -> {
+                    case 8 -> {
                         //Read id
                         int id = ReadId(scanner);
 
@@ -169,14 +181,14 @@ public class Main {
                     }
 
                     //Quit
-                    case 7 -> {
+                    case 9 -> {
                         //Stops the loop
                         System.out.println("So long, farewell, aufwiedersehn, goodbye");
                         running = false;
                     }
 
                     // If user enters number outside menu range
-                    default -> { System.out.println("Invalid option. Please choose 1-6."); }
+                    default -> { System.out.println("Invalid option. Please choose 1-9."); }
 
                 }
 
