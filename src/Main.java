@@ -46,7 +46,7 @@ public class Main {
             boolean running = true;
 
             //Main Loop
-            while (running = true) {
+            while (running == true) {
 
                 // Print the menu
                 System.out.println();
@@ -83,7 +83,7 @@ public class Main {
                         String title = scanner.nextLine();
 
                         //store in database
-                        repository.insertTask(title);
+                        int id = repository.insertTask(title);
 
                         // Show confirmation with generated ID
                         System.out.println("Task created with id=" + id);
@@ -106,8 +106,8 @@ public class Main {
 
                         boolean done;
                         // Validate user input
-                        if (raw_done.equalsIgnoreCase("true") || raw_is_done.equalsIgnoreCase("false")) {
-                            done = Boolean.parseBoolean(raw_is_done);
+                        if (raw_done.equalsIgnoreCase("true") || raw_done.equalsIgnoreCase("false")) {
+                            done = Boolean.parseBoolean(raw_done);
                         }
 
                         else {
